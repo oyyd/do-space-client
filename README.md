@@ -6,8 +6,4 @@ This is an example of using Yue with [react-yue](https://github.com/oyyd/react-y
 
 ## Screenshot
 
-|osx|
-|---|---|---|
-|![effect img](TODO)|
-
 ## Release
