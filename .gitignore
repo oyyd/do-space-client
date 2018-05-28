@@ -1,0 +1,10 @@
+node_modules
+WORK.md
+lib
+npm-debug.log
+research/**
+yode
+.DS_Store
+out
+
+**/__*

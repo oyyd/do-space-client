@@ -1,0 +1,95 @@
+{
+  "name": "do-space-client",
+  "version": "0.1.0",
+  "description": "A desktop client of Digital Ocean Space by the lib of Yue.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node scripts/start",
+    "dev": "node scripts/dev",
+    "build_lib": "babel src --out-dir lib -w",
+    "build": "babel src --out-dir lib"
+  },
+  "author": "oyyd <oyydoibh@gmail.com>",
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=8",
+    "yode": "0.3.4"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.230.1",
+    "fecha": "^2.3.3",
+    "fs-extra": "^6.0.1",
+    "gui": "^0.4.4",
+    "pretty-bytes": "^5.0.0",
+    "prop-types": "^15.6.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.3.2",
+    "react-redux": "^5.0.7",
+    "react-yue": "^0.4.0",
+    "redux": "^4.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.35",
+    "@babel/core": "^7.0.0-beta.35",
+    "@babel/preset-env": "^7.0.0-beta.35",
+    "@babel/preset-react": "^7.0.0-beta.35",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^8.0.0-beta.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "chokidar": "^2.0.3",
+    "eslint": "^4.13.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-babel": "^5.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.5.1",
+    "react": "^16.2.0",
+    "webpack-cli": "^2.1.3"
+  },
+  "license": "MIT",
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "8"
+          }
+        }
+      ],
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "transform-class-properties"
+    ]
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "env": {
+      "node": true,
+      "jest": true
+    },
+    "extends": "airbnb",
+    "rules": {
+      "semi": [
+        2,
+        "never"
+      ],
+      "arrow-parens": 0,
+      "global-require": 0,
+      "no-underscore-dangle": 0,
+      "no-param-reassign": 0,
+      "import/prefer-default-export": 0,
+      "react/jsx-filename-extension": 0,
+      "react/sort-comp": 0,
+      "react/jsx-indent-props": 0,
+      "react/jsx-indent": 0,
+      "jsx-a11y/label-has-for": 0,
+      "jsx-a11y/no-noninteractive-element-interactions": 0
+    }
+  }
+}
