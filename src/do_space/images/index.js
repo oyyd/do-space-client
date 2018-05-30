@@ -1,5 +1,6 @@
 import gui from 'gui'
 import path from 'path'
+import fs from 'fs'
 
 const images = {}
 
@@ -8,7 +9,10 @@ export function getImage(name) {
     return images[name]
   }
 
-  const img = gui.Image.createFromPath(path.resolve(__dirname, `../../../static/${name}`))
+  console.log('__dirname', __dirname)
+
+  const p = fs.realpathSync(path.join(__dirname, `static/${name}`))
+  const img = gui.Image.createFromPath(p)
 
   images[name] = img
 

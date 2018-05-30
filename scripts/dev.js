@@ -13,7 +13,7 @@ function restart() {
 }
 
 function main() {
-  const watcher = chokidar.watch(path.resolve(__dirname, '../lib/do_space'))
+  const watcher = chokidar.watch(path.resolve(__dirname, '../index.bundle.js'))
 
   watcher.on('change', () => {
     restart()
