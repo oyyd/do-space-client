@@ -7,6 +7,8 @@ import fs from 'fs'
 import prettyBytes from 'pretty-bytes'
 import { fontColor, fontColorStrong, primaryColor } from './style'
 import Icon from './icon'
+import { getImage } from '../images'
+import { alert } from './dialog'
 
 const MAX_ITEMS = 100
 const SEARCH_HEIGHT = 24
@@ -20,6 +22,8 @@ const OBJECT_STYLE = {
   paddingLeft: 8,
   paddingRight: 8,
 }
+
+const trayImage = getImage('folder.png')
 
 function getExtral(base, p) {
   const index = p.indexOf(base)
@@ -45,18 +49,13 @@ function a() {
   return {}
 }
 
-function saveFileToFS(stream, filepath) {
-  const fileStream = fs.createWriteStream(filepath)
-
-  stream.pipe(fileStream)
-}
-
 class WorkSpace extends React.Component {
   constructor(props) {
     super(props)
 
     this.refers = {}
     this.text = ''
+    this.shouldFetchInitialObjs = false
 
     this.state = {
       isLoading: false,
@@ -70,7 +69,23 @@ class WorkSpace extends React.Component {
     this.updateScrollSize()
   }
 
+  componentWillUpdate(nextProps) {
+    if (nextProps.activeBucket === this.props.activeBucket) {
+      return
+    }
+
+    this.shouldFetchInitialObjs = true
+    // this.text = ''
+    // this.searchText()
+  }
+
   componentDidUpdate() {
+    if (this.shouldFetchInitialObjs) {
+      this.shouldFetchInitialObjs = false
+      this.text = ''
+      this.searchText()
+    }
+
     setTimeout(() => {
       this.updateScrollSize()
     }, 500)
@@ -171,7 +186,13 @@ class WorkSpace extends React.Component {
     const { connection, activeBucket } = this.props
     const stream = connection.getObjectStreamByKey(activeBucket.Name, key)
 
-    saveFileToFS(stream, savePath)
+    const fileStream = fs.createWriteStream(savePath)
+
+    stream.pipe(fileStream)
+
+    stream.on('end', () => {
+      this.displayMessage()
+    })
   }
 
   openMoreActions = (key, folder) => {
@@ -179,23 +200,41 @@ class WorkSpace extends React.Component {
       folder
         ? null
         : {
-            label: 'download',
+            label: 'Download',
             onClick: () => this.downloadFile(key),
           },
       {
         type: 'separator',
       },
       {
-        label: 'delete',
-        onClick: () => {
-          console.log('click')
-        },
+        label: 'Delete',
+        enabled: false,
       },
     ].filter(i => !!i)
 
     const menu = gui.Menu.create(menuItems)
 
     menu.popup()
+  }
+
+  displayMessage = () => {
+    alert(
+      <container
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          flex: 1,
+        }}
+      >
+        <label text="success" />
+      </container>,
+      {
+        size: {
+          width: 200,
+          height: 140,
+        },
+      }
+    )
   }
 
   renderObject = i => {
@@ -238,11 +277,13 @@ class WorkSpace extends React.Component {
             style={{ flexWrap: 'wrap', color: fontColor, flex: 1 }}
             text={folder ? '-' : prettyBytes(i.Size)}
           />
-          <label
-            text="More"
-            style={{ color: primaryColor, flex: 1 }}
-            onMouseUp={() => this.openMoreActions(i.Key, folder)}
-          />
+          {folder ? null : (
+            <label
+              text="More"
+              style={{ color: primaryColor, flex: 1 }}
+              onMouseUp={() => this.openMoreActions(i.Key, folder)}
+            />
+          )}
         </container>
       </container>
     )
@@ -280,12 +321,16 @@ class WorkSpace extends React.Component {
     )
   }
 
+  renderWelcom = () => {
+    return <label text="Welcome" onMouseUp={this.displayMessage} />
+  }
+
   render() {
     const { connection, activeBucket } = this.props
     const { contents = [], prefixes = [] } = this.state
 
     if (!connection || !activeBucket) {
-      return <label text="wait connection" />
+      return this.renderWelcom()
     }
 
     return (

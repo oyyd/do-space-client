@@ -28,7 +28,7 @@ class Login extends React.Component {
 
     // TODO: remove
     this.state = {}
-    this.values = Object.assign({}, require('../do/__info'))
+    this.values = {}
   }
 
   renderField(name) {

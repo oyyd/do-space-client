@@ -1,4 +1,5 @@
 const style = {
+  whiteColor: '#FFFFFF',
   primaryColor: '#0069ff',
   secondColor: '#031b4e',
   bgColor: '#d5e2f1',

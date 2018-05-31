@@ -8,8 +8,9 @@
     "dev": "node scripts/dev",
     "bundle_watch": "webpack -w --config webpack.config.js",
     "bundle": "webpack --config webpack.config.js",
-    "build": "yackage build out --cache-dir yode --unpack \"+(*.node|*.html|*.png)\"",
-    "dist": "yackage dist out --cache-dir yode --unpack \"+(*.node|*.html|*.png)\""
+    "bundle_prod": "export NODE_ENV=production && webpack --config webpack.config.js",
+    "build": "npm run bundle_prod && yackage build out --cache-dir yode --unpack \"+(*.node|*.html|*.png)\"",
+    "dist": "npm run bundle_prod && yackage dist out --cache-dir yode --unpack \"+(*.node|*.html|*.png)\""
   },
   "files": [
     "build",
@@ -40,7 +41,8 @@
     "react-dom": "^16.3.2",
     "react-redux": "^5.0.7",
     "react-yue": "^0.4.0",
-    "redux": "^4.0.0"
+    "redux": "^4.0.0",
+    "uglifyjs-webpack-plugin": "^1.2.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.35",

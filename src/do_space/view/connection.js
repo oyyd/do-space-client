@@ -1,16 +1,17 @@
 import React from 'react'
 import { PropTypes } from 'prop-types'
 import { connect } from 'react-redux'
-import gui from 'gui'
 import { createConnectWindow } from './login'
 import { DoSpace } from '../do/connect'
 import { regionConnectionWidth } from './style'
 import { getImage } from '../images'
+import { getConnInfo } from './utils'
+import { debug } from '../log'
 
 const { func, array } = PropTypes
 
 const BTN_WIDTH = 40
-const marginSize = (regionConnectionWidth - BTN_WIDTH) / 2
+const MARGIN_SIZE = (regionConnectionWidth - BTN_WIDTH) / 2
 const COMMON_MARGIN_TOP = 10
 
 const CONNECTION_STYLE = {
@@ -19,10 +20,31 @@ const CONNECTION_STYLE = {
   marginTop: COMMON_MARGIN_TOP,
 }
 
+function getRegion(endpoint) {
+  if (!endpoint) {
+    return endpoint
+  }
+
+  const dotIndex = endpoint.indexOf('.')
+
+  if (dotIndex >= 0) {
+    return endpoint.slice(0, dotIndex)
+  }
+
+  return endpoint
+}
+
 function saveAddConnData(dispatch, data) {
   dispatch({
     type: 'saveAddConnData',
     data,
+  })
+}
+
+function setActiveConnection(dispatch, conn) {
+  dispatch({
+    type: 'setActiveConnection',
+    data: conn,
   })
 }
 
@@ -55,6 +77,7 @@ function d(dispatch) {
     connectDoSpace: connectDoSpace.bind(null, dispatch),
     addBuckets: addBuckets.bind(null, dispatch),
     saveAddConnData: saveAddConnData.bind(null, dispatch),
+    setActiveConnection: setActiveConnection.bind(null, dispatch),
   }
 }
 
@@ -63,6 +86,7 @@ class Connection extends React.Component {
     connectDoSpace: func.isRequired,
     saveAddConnData: func.isRequired,
     addBuckets: func.isRequired,
+    setActiveConnection: func.isRequired,
     connections: array.isRequired,
   }
 
@@ -78,8 +102,6 @@ class Connection extends React.Component {
     const { config = {} } = this.props
     const { connectionsInfo = [] } = config
 
-    console.log('config', config)
-
     connectionsInfo.forEach(connInfo => {
       const data = Object.assign(
         {
@@ -94,7 +116,7 @@ class Connection extends React.Component {
 
   componentDidUpdate() {}
 
-  initConn = (data) => {
+  initConn = data => {
     const conn = new DoSpace(data)
 
     return conn.listBuckets().then(res => {
@@ -105,18 +127,44 @@ class Connection extends React.Component {
     })
   }
 
+  connectionExists = (data) => {
+    const { connections } = this.props
+
+    if (!connections || !Array.isArray(connections)) {
+      return false
+    }
+
+    let exist = false
+
+    connections.forEach(conn => {
+      const info = getConnInfo(conn)
+
+      if (info.endpoint === data.endpoint && info.accessKeyId === data.accessKeyId) {
+        exist = true
+      }
+    })
+
+    return exist
+  }
+
   createConnectWindow = () => {
     createConnectWindow((data, guiWindow) => {
       guiWindow.setTitle('connecting...')
 
-      this.initConn(data).then(() => {
-        console.log('save', data)
-        this.props.saveAddConnData(data)
+      if (this.connectionExists(data)) {
         guiWindow.close()
-      }).catch(err => {
-        guiWindow.close()
-        console.log(err)
-      })
+        return
+      }
+
+      this.initConn(data)
+        .then(() => {
+          this.props.saveAddConnData(data)
+          guiWindow.close()
+        })
+        .catch(err => {
+          guiWindow.close()
+          console.log(err)
+        })
     })
   }
 
@@ -133,21 +181,33 @@ class Connection extends React.Component {
     }
   }
 
+  changeActiveConnection = connection => {
+    this.props.setActiveConnection(connection)
+  }
+
   render() {
     const { connections } = this.props
 
+    debug('[CONNECTIONS]', connections.length)
+
     return (
-      <container style={{ paddingLeft: marginSize, paddingRight: marginSize }}>
-        {connections.map((i, index) => (
-          <container
-            ref={this.initConnectionContainer}
-            key={index}
-            style={CONNECTION_STYLE}
-          >
-            {/* TODO: */}
-            <label text="Hello" style={{ marginTop: 10, color: '#FFF' }} />
-          </container>
-        ))}
+      <container style={{ paddingLeft: MARGIN_SIZE, paddingRight: MARGIN_SIZE }}>
+        {connections.map((i, index) => {
+          const connInfo = getConnInfo(i)
+          return (
+            <container
+              ref={this.initConnectionContainer}
+              key={index}
+              style={CONNECTION_STYLE}
+              onMouseUp={() => this.changeActiveConnection(i)}
+            >
+              <label
+                text={getRegion(connInfo.endpoint)}
+                style={{ marginTop: 10, color: '#FFF' }}
+              />
+            </container>
+          )
+        })}
         <button
           title="+"
           style={{ marginTop: COMMON_MARGIN_TOP }}

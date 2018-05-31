@@ -30,6 +30,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       __dirname: '__dirname',
+      'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
     }),
   ],
 }

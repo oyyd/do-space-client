@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import os from 'os'
+import { debug } from '../log'
 
 const CONFIG_FOLDER_NAME = 'do-space-client'
 const CONFIG_FILE_NAME = 'config.json'
@@ -37,6 +38,8 @@ export async function readConfig() {
   } catch (e) {
     //
   }
+
+  debug('[CONFIG_FILE]', content)
 
   return content
 }

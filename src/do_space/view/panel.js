@@ -9,6 +9,7 @@ import Icon from './icon'
 // const fontTitle = Font.create('aria', 16, 'bold', 'normal')
 const bucketTitle = Font.create('aria', 12, 'bold', 'normal')
 const fontCom = Font.create('aria', 12, 'bold', 'normal')
+const LEFT_PADDING = 10
 
 function saveRemoveConn(dispatch, conn) {
   dispatch({
@@ -118,7 +119,8 @@ class Panel extends React.Component {
     const isActive = activeBucket === bucket
 
     const containerStyle = {
-      paddingLeft: 20,
+      paddingTop: 4,
+      paddingLeft: LEFT_PADDING,
       marginBottom: 12,
       backgroundColor,
     }
@@ -146,7 +148,11 @@ class Panel extends React.Component {
             }}
           >
             {isActive
-              ? <Icon width={14} height={14} filename="close.png" />
+              ? (
+                <container style={{ paddingTop: 3 }}>
+                  <Icon width={14} height={14} filename="dot.png" />
+                </container>
+              )
               : null}
           </container>
           <label
@@ -163,7 +169,7 @@ class Panel extends React.Component {
           style={{
             marginTop: 4,
             marginBottom: 4,
-            paddingLeft: 10,
+            paddingLeft: LEFT_PADDING,
           }}
         >
           <label
@@ -213,19 +219,21 @@ class Panel extends React.Component {
       <container>
         <container
           style={{
-            paddingLeft: 20,
+            paddingLeft: LEFT_PADDING,
             marginTop: 8,
             marginBottom: 14,
-            flexWrap: 'wrap',
+            flexDirection: 'row',
           }}
           onMouseUp={() => this.logoutPop(activeConnection)}
         >
+          <container style={{ paddingTop: 3, width: 14 }}>
+            <Icon width={14} height={14} filename="close_primary.png" />
+          </container>
           <label
             font={bucketTitle}
             text={host}
             style={{
               color: fontColorStrong,
-              flexWrap: 'wrap',
             }}
           />
         </container>
