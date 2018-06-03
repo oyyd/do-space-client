@@ -6,8 +6,10 @@ This is an example of using Yue with [react-yue](https://github.com/oyyd/react-y
 
 ## Screenshot
 
-|osx|
-|---|---|---|
-|![osx-screenshot](https://raw.githubusercontent.com/oyyd/do-space-client/static/site/screenshot.png)|
+|mac|
+|---|
+|<img src="https://raw.githubusercontent.com/oyyd/do-space-client/static/site/screenshot.png" width="400px"/>|
 
 ## Release
+
+[release](https://github.com/oyyd/do-space-client/releases)
