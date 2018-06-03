@@ -6,5 +6,6 @@ research/**
 yode
 .DS_Store
 out
+**/*.zip
 
 **/__*
